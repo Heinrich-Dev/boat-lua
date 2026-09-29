@@ -1,5 +1,5 @@
 -- Converts yaw from rads to degs, gets lat and lng and tries to print them all
-function send_initial_istate()
+function main()
     get_yaw()
     get_location()
     return send_initial_istate, 1000
@@ -26,4 +26,4 @@ function get_location()
     print(string.format("Lat: %.3f", location_ud:lat() / 1e+7))
 end
 
-return send_initial_istate()
+return main()
