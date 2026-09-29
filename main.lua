@@ -2,7 +2,7 @@
 function main()
     get_yaw()
     get_location()
-    return send_initial_istate, 1000
+    return main, 1000
 end
 
 -- Prints yaw from rads to degs and prints prints
