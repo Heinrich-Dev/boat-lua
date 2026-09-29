@@ -1,3 +1,5 @@
+local commands = {}
+
 -- double check these
 local left_motor = 2
 local right_motor = 0
@@ -9,14 +11,14 @@ local TURN_TIMEOUT = 1000
 
 -- what happens if two set_output_pwm_chan_timeout() calls happen before the first timeout finishes?
 -- set_heading is given a target heading and rotates the boat until it is reached 
-function set_heading(target_heading_min, target_heading_max)
+function commands.set_heading(target_heading_min, target_heading_max)
     local current_heading = get_yaw()
 
     while target_heading_min > current_heading or target_heading_max < current_heading do
         if target_heading_min > current_heading then
             -- rotate clockwise
             SRV_Channels:set_output_pwm_chan_timeout(left_motor, FORWARD, TURN_TIMEOUT)
-        else if target_heading_max < current_heading then
+        elseif target_heading_max < current_heading then
             -- rotate counterclockwise
             SRV_Channels:set_output_pwm_chan_timeout(right_motor, FORWARD, TURN_TIMEOUT)
         end
@@ -27,7 +29,7 @@ end
 
 -- might need to correct drift?
 -- start moves the boat forward
-function start(target_heading_min, target_heading_max)
+function commands.start(target_heading_min, target_heading_max)
     SRV_Channels:set_output_pwm_chan(left_motor, FORWARD)
     SRV_Channels:set_output_pwm_chan(right_motor, FORWARD)
 end
@@ -35,7 +37,7 @@ end
 
 -- make it loiter?
 -- stop stops the boat
-function stop()
+function commands.stop()
     SRV_Channels:set_output_pwm_chan(left_motor, STOP)
     SRV_Channels:set_output_pwm_chan(right_motor, STOP)
     -- mavcmddosetmode
@@ -52,3 +54,5 @@ function get_yaw()
 
     return yaw
 end
+
+return commands
