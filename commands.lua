@@ -7,7 +7,8 @@ local STOP = 1510
 local FORWARD = 1550 -- set this
 local BACKWARD = 1460 -- set this
 local TURN_TIMEOUT = 1000
-
+local HOLD_MODE = 4
+local GUIDED_MODE = 15
 
 -- what happens if two set_output_pwm_chan_timeout() calls happen before the first timeout finishes?
 -- set_heading is given a target heading and rotates the boat until it is reached 
@@ -30,6 +31,7 @@ end
 -- might need to correct drift?
 -- start moves the boat forward
 function commands.start(target_heading_min, target_heading_max)
+    vehicle:set_mode(GUIDED_MODE)
     SRV_Channels:set_output_pwm_chan(left_motor, FORWARD)
     SRV_Channels:set_output_pwm_chan(right_motor, FORWARD)
 end
@@ -40,8 +42,7 @@ end
 function commands.stop()
     SRV_Channels:set_output_pwm_chan(left_motor, STOP)
     SRV_Channels:set_output_pwm_chan(right_motor, STOP)
-    -- mavcmddosetmode
-    vehicle:set_mode(4)
+    vehicle:set_mode(HOLD_MODE)
 end
 
 -- Returns yaw in radians
