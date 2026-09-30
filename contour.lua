@@ -1,8 +1,8 @@
-local contourModule = {}
+local contour_module = {}
 local tolerance = .0001
 -- contour should be a single contour, so an index
 -- in the IStates table, not the whole table
-function contourModule.distanceFromContour(location, contour)
+function contour_module.distance_from_contour(location, contour)
     local x0 = location:lng() / 1e+7
     local y0 = location:lat() / 1e+7
 
@@ -16,18 +16,15 @@ function contourModule.distanceFromContour(location, contour)
     local numerator = math.abs(n1-n2+(x2*y1)-(y2*x1))
     local denominator = math.sqrt(math.pow(y2-y1, 2) + math.pow(x2-x1, 2))
     local distance = numerator / denominator
-
-    if distance <= tolerance then
-        return true
-    end
-    return false
+    
+    return distance
 end
 
-function contourModule.checkApproach(distance, prev_distance)
+function contour_module.check_approach(distance, prev_distance)
     if distance <= prev_distance then
         return true
     end
     return false
 end
 
-return contourModule
+return contour_module

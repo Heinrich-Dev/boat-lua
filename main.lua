@@ -1,11 +1,46 @@
--- Converts yaw from rads to degs, gets lat and lng and tries to print them all
-function main()
-    get_yaw()
-    get_location()
-    return main, 1000
+local contour_module = require("contour_module")
+local command_module = require("command")
+local plan_table = require("plan")
+
+local acc = 0
+local curr_contour = 1
+local prev_distance = {}
+local tolerance = .00001 -- in lat/long, how close bot needs to be to move to next contour
+
+function start()
+    local curr_location = get_location()
+    prev_distance = countour_module.distance_from_contour(curr_location, plan_table[curr_contour])
+    local heading_min = plan_table[curr_contour]["heading"]["heading_start"]
+    local heading_max = plan_table[curr_contour]["heading"]["heading_end"]
+    command_module.set_heading(heading_min, heading_max)
+    command_module.start()
+    return loop
 end
 
--- Prints yaw from rads to degs and prints prints
+function loop()
+    local curr_yaw = get_yaw()
+    local curr_location = get_location()
+    local curr_distance = contour_module.distance_from_contour()
+
+    if curr_distance <= tolerance then
+        command_module.stop()
+        local heading_min = plan_table[curr_contour]["heading"]["heading_start"]
+        local heading_max = plan_table[curr_contour]["heading"]["heading_end"]
+        command_module.set_heading(heading_min, heading_max)
+        curr_contour = curr_contour + 1
+        command_module.start()
+    end
+
+    if acc == 5 then
+        counter_module.check_approach(prev_distance, curr_distance)
+        acc = 0
+    end
+
+    acc = acc + 1
+
+    return loop, 1000
+end
+
 function get_yaw()
     local yaw_radians = ahrs:get_yaw()
    
@@ -13,17 +48,14 @@ function get_yaw()
         yaw_radians = yaw_radians + (2 * 3.14159)
     end
     
-    local yaw_degrees = yaw_radians * 57.2958
-    
-    print(string.format("Yaw: %.3f", yaw_degrees))
+    return yaw_radians
 end
 
 function get_location()
     local gps_instance = gps:primary_sensor()
     local location_ud = gps:location(gps_instance)
     
-    print(string.format("Long: %.3f", location_ud:lng() / 1e+7))
-    print(string.format("Lat: %.3f", location_ud:lat() / 1e+7))
+    return location_ud
 end
 
-return main()
+return start()
