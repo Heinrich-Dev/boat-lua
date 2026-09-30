@@ -27,6 +27,7 @@ function commands.set_heading(target_heading_min, target_heading_max)
         end
         -- stop rotating and check again
     end
+    print("Heading correct")
 end
 
 
