@@ -1,5 +1,4 @@
 local contour_module = {}
-local tolerance = .0001
 -- contour should be a single contour, so an index
 -- in the IStates table, not the whole table
 function contour_module.distance_from_contour(location, contour)
@@ -14,7 +13,7 @@ function contour_module.distance_from_contour(location, contour)
     local n1 = (y2-y1)*x0
     local n2 = (x2-x1)*y0
     local numerator = math.abs(n1-n2+(x2*y1)-(y2*x1))
-    local denominator = math.sqrt(math.pow(y2-y1, 2) + math.pow(x2-x1, 2))
+    local denominator = math.sqrt((y2-y1) ^ 2 + (x2-x1) ^ 2)
     local distance = numerator / denominator
     
     return distance

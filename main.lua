@@ -1,5 +1,5 @@
-local contour_module = require("contour_module")
-local command_module = require("command")
+local contour_module = require("contour")
+local command_module = require("commands")
 local plan_table = require("plan")
 
 local acc = 0
@@ -9,12 +9,12 @@ local tolerance = .00001 -- in lat/long, how close bot needs to be to move to ne
 
 function start()
     local curr_location = get_location()
-    prev_distance = countour_module.distance_from_contour(curr_location, plan_table[curr_contour])
+    prev_distance = contour_module.distance_from_contour(curr_location, plan_table[curr_contour])
     local heading_min = plan_table[curr_contour]["heading"]["heading_start"]
     local heading_max = plan_table[curr_contour]["heading"]["heading_end"]
     command_module.set_heading(heading_min, heading_max)
     command_module.start()
-    return loop
+    return loop, 1000
 end
 
 function loop()
