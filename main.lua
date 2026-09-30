@@ -20,7 +20,7 @@ end
 function loop()
     local curr_yaw = get_yaw()
     local curr_location = get_location()
-    local curr_distance = contour_module.distance_from_contour()
+    local curr_distance = contour_module.distance_from_contour(curr_location, plan_table[curr_contour])
 
     if curr_distance <= tolerance then
         command_module.stop()
