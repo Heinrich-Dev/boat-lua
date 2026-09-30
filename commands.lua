@@ -18,9 +18,11 @@ function commands.set_heading(target_heading_min, target_heading_max)
     while target_heading_min > current_heading or target_heading_max < current_heading do
         if target_heading_min > current_heading then
             -- rotate clockwise
+            print(format.string("turn clockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
             SRV_Channels:set_output_pwm_chan_timeout(left_motor, FORWARD, TURN_TIMEOUT)
         elseif target_heading_max < current_heading then
             -- rotate counterclockwise
+            print(format.string("turn counterclockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
             SRV_Channels:set_output_pwm_chan_timeout(right_motor, FORWARD, TURN_TIMEOUT)
         end
         -- stop rotating and check again
@@ -31,6 +33,7 @@ end
 -- might need to correct drift?
 -- start moves the boat forward
 function commands.start(target_heading_min, target_heading_max)
+    print("Start")
     vehicle:set_mode(GUIDED_MODE)
     SRV_Channels:set_output_pwm_chan(left_motor, FORWARD)
     SRV_Channels:set_output_pwm_chan(right_motor, FORWARD)
@@ -40,6 +43,7 @@ end
 -- make it loiter?
 -- stop stops the boat
 function commands.stop()
+    print("Stop")
     SRV_Channels:set_output_pwm_chan(left_motor, STOP)
     SRV_Channels:set_output_pwm_chan(right_motor, STOP)
     vehicle:set_mode(HOLD_MODE)
