@@ -12,22 +12,21 @@ local GUIDED_MODE = 15
 
 -- what happens if two set_output_pwm_chan_timeout() calls happen before the first timeout finishes?
 -- set_heading is given a target heading and rotates the boat until it is reached 
+
 function commands.set_heading(target_heading_min, target_heading_max)
     local current_heading = get_yaw()
 
-    while target_heading_min > current_heading or target_heading_max < current_heading do
-        if target_heading_min > current_heading then
-            -- rotate clockwise
-            print(format.string("turn clockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
-            SRV_Channels:set_output_pwm_chan_timeout(left_motor, FORWARD, TURN_TIMEOUT)
-        elseif target_heading_max < current_heading then
-            -- rotate counterclockwise
-            print(format.string("turn counterclockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
-            SRV_Channels:set_output_pwm_chan_timeout(right_motor, FORWARD, TURN_TIMEOUT)
-        end
-        -- stop rotating and check again
+    if target_heading_min <= current_heading and target_heading_max >= current_heading then
+        print("Heading correct")
+        return
+    elseif target_heading_min > current_heading then
+        print(string.format("turn clockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
+        SRV_Channels:set_output_pwm_chan_timeout(left_motor, FORWARD, TURN_TIMEOUT)
+    elseif target_heading_max > current_heading then
+        print(string.format("turn counterclockwise, target_min %.3f, target_max %.3f, heading %.3f", target_heading_min, target_heading_max, current_heading))
+        SRV_Channels:set_output_pwm_chan_timeout(right_motor, FORWARD, TURN_TIMEOUT)
     end
-    print("Heading correct")
+    return commands.set_heading, 1000
 end
 
 
