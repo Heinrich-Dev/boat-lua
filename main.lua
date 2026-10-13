@@ -2,7 +2,6 @@ local contour_module = require("contour")
 local command_module = require("commands")
 local plan_table = require("plan")
 
-local acc = 0
 local curr_contour = 1
 local prev_distance = {}
 local tolerance = .00001 -- in lat/long, how close bot needs to be to move to next contour
@@ -30,13 +29,6 @@ function loop()
         curr_contour = curr_contour + 1
         command_module.start()
     end
-
-    if acc == 5 then
-        counter_module.check_approach(prev_distance, curr_distance)
-        acc = 0
-    end
-
-    acc = acc + 1
 
     return loop, 1000
 end
