@@ -2,6 +2,9 @@ local contour_module = require("contour")
 local command_module = require("commands")
 local plan_table = require("plan")
 
+contour_table = plan_table[1]
+heading_table = plan_table[2]
+
 local curr_contour = 1
 local prev_distance = {}
 local tolerance = .00001 -- in lat/long, how close bot needs to be to move to next contour
