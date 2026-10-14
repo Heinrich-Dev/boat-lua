@@ -11,7 +11,7 @@ function split(str, delim)
     return sub
 end
 
--- Converts a single line of a .plan file to a table
+-- Converts a single contour of a .plan file to a table
 function load_contour(line)
     line_split = split(line, ",")
     return {
@@ -20,14 +20,14 @@ function load_contour(line)
     }
 end
 
--- Converts the next line of a .plan file to a table
+-- Converts the headings to a table
 function load_headings(input)
     line = input:read("*line")
     line_split = split(line, ",")
     return line_split
 end
 
--- Writes a table to a file. Assumes the file is open
+-- Writes a list of contours to a file
 function write_contours(file, table)
     file:write("local plan_table = {\n") -- This is always the start to a lua file with a table
     for index, contour in ipairs(table) do
@@ -45,6 +45,7 @@ function write_contours(file, table)
     file:write("}")
 end
 
+-- Writes a list of headings to a file
 function write_headings(file, table)
     file:write("\nlocal heading_table = {\n") -- This is always the start to a lua file with a table
     for index, heading in ipairs(table) do
@@ -73,11 +74,11 @@ function load_file()
         local line = input:read("*line")
         if not line then
             break
-        elseif line == "" then
+        elseif line == "" then -- if there is an empty line, read the next line as headings then exit the loop
             heading_table = load_headings(input)
             break
         end
-        table.insert(contour_table, load_contour(line))
+        table.insert(contour_table, load_contour(line)) -- insert the next contour
     end
 
     -- Open the output file
@@ -87,6 +88,7 @@ function load_file()
         return
     end
 
+    -- Write the contours and headings to the table file
     write_contours(plan_file, contour_table)
     write_headings(plan_file, heading_table)
     plan_file:write("\nreturn {plan_table, heading_table}")
